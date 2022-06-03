@@ -37,8 +37,10 @@ function calculos() {
 }
 
 function eliminarPersona(e) {
-    let nombre = e.target.childNodes[1].children[0].textContent
-    let monto = e.target.childNodes[1].children[1].textContent
+    let liElement = e.currentTarget.children[0]
+
+    let nombre = liElement.childNodes[1].children[0].textContent
+    let monto = liElement.childNodes[1].children[1].textContent
 
     let indiceN = todos_los_nombres.indexOf(nombre)
     let indiceM = todos_los_montos.indexOf(monto)
@@ -47,13 +49,14 @@ function eliminarPersona(e) {
     todos_los_montos.splice(indiceM, 1)
 
 
-    e.target.remove()
+    liElement.remove()
     calculos()
     e.stopPropagation();
 
     if (todos_los_nombres.length == 0) {
         resultados.innerHTML = ''
     }
+    console.log(todos_los_nombres)
 
 }
 
@@ -77,7 +80,6 @@ function agregarPersona() {
         item_list.innerHTML += item
 
         calculos();
-
         item_list.addEventListener('click', eliminarPersona)
     }
 }
