@@ -37,7 +37,8 @@ function calculos() {
 }
 
 function eliminarPersona(e) {
-    let liElement = e.currentTarget.children[0]
+    let index = e.path.findIndex(el => el.classList[0] == "list-group-item")
+    let liElement = e.path[index]
 
     let nombre = liElement.childNodes[1].children[0].textContent
     let monto = liElement.childNodes[1].children[1].textContent
@@ -56,7 +57,6 @@ function eliminarPersona(e) {
     if (todos_los_nombres.length == 0) {
         resultados.innerHTML = ''
     }
-    console.log(todos_los_nombres)
 
 }
 
