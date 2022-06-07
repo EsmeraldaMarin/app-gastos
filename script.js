@@ -3,6 +3,25 @@ const input_name = document.getElementById('name_input');
 const input_amount = document.getElementById('amount_input');
 const item_list = document.getElementById('item_list');
 const resultados = document.getElementById('resultados');
+const select_forma_pago = document.getElementById('fdp_select')
+const input_fecha = document.getElementById('fecha_pago')
+const descargarA = document.getElementById('downl')
+let totalM = 0
+let totalP = 0
+
+//contado, fecha y descargar
+let todas_las_personas = []
+
+function crearPersona(nombre, monto, fecha_pago, modoDePago) {
+
+    return {
+        nombre: nombre,
+        monto: monto,
+        fecha:fecha_pago,
+        modoDePago: modoDePago
+    }
+}
+
 
 let todos_los_nombres = []
 let todos_los_montos = []
@@ -15,23 +34,15 @@ function createItem(name, amount) {
     return item
 }
 
-function calculos() {
-
-    let totalM = 0
-    let totalP = 0
-
-    todos_los_montos.forEach(monto => {
-        totalM += parseFloat(monto)
-    })
-    todos_los_nombres.forEach(() => {
-        totalP += 1
-    })
+function calculos(monto) {
+    totalM += parseFloat(monto)
+    totalP += 1
 
     let totalSpan = `
-    <h3>Resultados</h3>
-    <span>Total: $${totalM}</span>
-    <span>Cada uno debe aportar $${totalM / totalP}</span>
-    `
+        <h3>Resultados</h3>
+        <span>Total: $${totalM}</span>
+        <span>Cada uno debe aportar $${totalM / totalP}</span>
+        `
     resultados.innerHTML = totalSpan
 
 }
@@ -63,8 +74,12 @@ function eliminarPersona(e) {
 function agregarPersona() {
     let nombre_persona = input_name.value;
     let monto_persona = input_amount.value;
+    let fecha_pago = input_fecha.value;
+
+    let forma_pago = select_forma_pago.options[select_forma_pago.selectedIndex].textContent
     input_name.value = ''
     input_amount.value = ''
+    input_fecha.value = ''
 
     if (nombre_persona == "" || monto_persona == "") {
         document.body.classList = 'error'
@@ -73,13 +88,13 @@ function agregarPersona() {
         document.body.classList.remove('error')
 
         let item = createItem(nombre_persona, monto_persona)
+        let persona = crearPersona(nombre_persona, monto_persona, fecha_pago, forma_pago)
 
-        todos_los_nombres.push(nombre_persona)
-        todos_los_montos.push(monto_persona)
-
+        todas_las_personas.push(persona)
+        console.log(persona)
         item_list.innerHTML += item
 
-        calculos();
+        calculos(monto_persona);
         item_list.addEventListener('click', eliminarPersona)
     }
 }
@@ -90,4 +105,15 @@ input_amount.parentElement.parentElement.addEventListener('keyup', (e) => {
         agregarPersona()
     }
 })
+descargarA.addEventListener('click', descargar)
+
+function descargar() {
+
+    let archivo = new Blob([JSON.stringify(todas_las_personas)], { type: 'text/plain' });
+
+    descargarA.href = URL.createObjectURL(archivo);
+
+    descargarA.download = "datos_personas.json";
+
+}
 
